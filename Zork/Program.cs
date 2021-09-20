@@ -4,7 +4,7 @@ namespace Zork
 {
     class Program
     {
-        private static string Location
+        private static Room CurrentRoom
         {
             get
             {
@@ -19,7 +19,7 @@ namespace Zork
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.Write($"{Location}\n> ");
+                Console.Write($"{CurrentRoom.Name}\n> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
                 switch (command)
@@ -29,7 +29,7 @@ namespace Zork
                         break;
 
                     case Commands.LOOK:
-                        Console.WriteLine("This is an open field west of a white house, with a boarded front door.\nA rubber mat saying 'Welcome to Zork!' lies by the door.");
+                        Console.WriteLine(CurrentRoom.Description);
                         break;
 
                     case Commands.NORTH:
@@ -77,11 +77,16 @@ namespace Zork
 
         private static Commands ToCommand(string commandString) => Enum.TryParse(commandString, true, out Commands result) ? result : Commands.UNKNOWN;
 
-        private static string[,] Rooms =
+        private static void InitializeRoomDescriptions()
         {
-            { "Rocky Trail", "South of House", "Canyon View" },
-            { "Forest", "West of House", "Behind House" },
-            { "Dense Woods", "North of House", "Clearing" }
+            Rooms[0, 0].Description = "You are on a rock-strewn trail";
+        }
+
+        private static readonly Room[,] Rooms =
+        {
+            { new Room("Rocky Trail"),    new Room("South of House"),   new Room("Canyon View") },
+            { new Room("Forest"),         new Room("West of House"),    new Room("Behind House") },
+            { new Room("Dense Woods"),    new Room("North of House"),   new Room("Clearing") }
         };
 
         private static int LocationRow = 1;
