@@ -14,6 +14,8 @@ namespace Zork
 
         static void Main(string[] args)
         {
+            InitializeRoomDescriptions();
+
             Console.WriteLine("Welcome to Zork!");
 
             while (true)
@@ -79,6 +81,18 @@ namespace Zork
         private static void InitializeRoomDescriptions()
         {
             Rooms[0, 0].Description = "You are on a rock-strewn trail";
+            Rooms[0, 1].Description = "south house";
+            Rooms[0, 2].Description = "top canyon";
+
+            Rooms[1, 0].Description = "forest";
+            Rooms[1, 1].Description = "west house";
+            Rooms[1, 2].Description = "behind house";
+
+            Rooms[2, 0].Description = "dense woods";
+            Rooms[2, 1].Description = "north house";
+            Rooms[2, 2].Description = "clearing";
+
+
         }
 
         private static readonly Room[,] Rooms =
