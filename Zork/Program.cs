@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Zork
 {
@@ -18,9 +19,20 @@ namespace Zork
 
             Console.WriteLine("Welcome to Zork!");
 
+            Room previousRoom = null;
+
             while (true)
             {
-                Console.Write($"{CurrentRoom.Name}\n> ");
+                Console.WriteLine(CurrentRoom);
+
+                if (previousRoom != CurrentRoom)
+                {
+                    Console.WriteLine(CurrentRoom.Description);
+                    previousRoom = CurrentRoom;
+                }
+
+                Console.Write("> ");
+
                 command = ToCommand(Console.ReadLine().Trim());
 
                 switch (command)
@@ -80,17 +92,23 @@ namespace Zork
 
         private static void InitializeRoomDescriptions()
         {
-            Rooms[0, 0].Description = "You are on a rock-strewn trail";
-            Rooms[0, 1].Description = "south house";
-            Rooms[0, 2].Description = "top canyon";
+            var roomMap = new Dictionary<string, Room>();
+            foreach (Room room in Rooms)
+            {
+                roomMap.Add(room.Name, room);
+            }
 
-            Rooms[1, 0].Description = "forest";
-            Rooms[1, 1].Description = "west house";
-            Rooms[1, 2].Description = "behind house";
+            roomMap["Rocky Trail"].Description = "You are on a rock-strewn trail";
+            roomMap["South of House"].Description = "south house";
+            roomMap["Canyon View"].Description = "top canyon";
 
-            Rooms[2, 0].Description = "dense woods";
-            Rooms[2, 1].Description = "north house";
-            Rooms[2, 2].Description = "clearing";
+            roomMap["Forest"].Description = "forest";
+            roomMap["West of House"].Description = "west house";
+            roomMap["Behind House"].Description = "behind house";
+
+            roomMap["Dense Woods"].Description = "dense woods";
+            roomMap["North of House"].Description = "north house";
+            roomMap["Clearing"].Description = "clearing";
 
 
         }
