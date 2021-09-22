@@ -4,49 +4,47 @@ namespace Zork
 {
     class Program
     {
-
-        private static string Location
+        private static Room CurrentRoom
         {
             get
             {
-                return Rooms[LocationColumn];
+                return Rooms[LocationRow, LocationColumn];
             }
         }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Zork!");
 
             while (true)
             {
-                Console.Write($"{Location}\n> ");
-                Commands command = ToCommand(Console.ReadLine().Trim());
-                if (command == Commands.QUIT)
-                    break;
+                Console.Write($"{CurrentRoom.Name}\n> ");
+                command = ToCommand(Console.ReadLine().Trim());
 
-                string outputString;
                 switch (command)
                 {
                     case Commands.QUIT:
-                        outputString = "Thank you for playing";
+                        Console.WriteLine("Thank you for playing");
                         break;
 
                     case Commands.LOOK:
-                        outputString = "This is an open field west of a white house, with a boarded front door.\nA rubber mat saying 'Welcome to Zork!' lies by the door.";
+                        Console.WriteLine(CurrentRoom.Description);
                         break;
 
                     case Commands.NORTH:
                     case Commands.SOUTH:
                     case Commands.EAST:
                     case Commands.WEST:
-                        outputString = (Move(command)) ? $"You Moved {command}." : "The way is shut";
+                        if ((Move(command) == false))
+                        {
+                            Console.WriteLine("The way is shut");
+                        }
                         break;
 
                     default:
-                        outputString = "Unknown command";
+                        Console.WriteLine("Unknown command");
                         break;
                 }
-
-                Console.WriteLine(outputString);
             }
         }
 
@@ -56,8 +54,13 @@ namespace Zork
 
             switch (command)
             {
-                case Commands.NORTH:
-                case Commands.SOUTH:
+                case Commands.NORTH when LocationRow < Rooms.GetLength(0) - 1:
+                    LocationRow++;
+                    didMove = true;
+                    break;
+                case Commands.SOUTH when LocationRow > 0:
+                    LocationRow--;
+                    didMove = true;
                     break;
                 case Commands.EAST when LocationColumn < Rooms.GetLength(1) - 1:
                     LocationColumn++;
@@ -73,8 +76,19 @@ namespace Zork
 
         private static Commands ToCommand(string commandString) => Enum.TryParse(commandString, true, out Commands result) ? result : Commands.UNKNOWN;
 
-        private static string[] Rooms = { "Forest", "West of House", "Behind House", "Clearing", "Canyon View" };
+        private static void InitializeRoomDescriptions()
+        {
+            Rooms[0, 0].Description = "You are on a rock-strewn trail";
+        }
 
+        private static readonly Room[,] Rooms =
+        {
+            { new Room("Rocky Trail"),    new Room("South of House"),   new Room("Canyon View") },
+            { new Room("Forest"),         new Room("West of House"),    new Room("Behind House") },
+            { new Room("Dense Woods"),    new Room("North of House"),   new Room("Clearing") }
+        };
+
+        private static int LocationRow = 1;
         private static int LocationColumn = 1;
     }
 }
