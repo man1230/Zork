@@ -21,9 +21,9 @@ namespace Zork
 
             //Room previousRoom = null;
 
-            Commands command = new Commands();
+            Commands command = Commands.UNKNOWN;
 
-            while (true)
+            while (command != Commands.QUIT)
             {
                 Console.WriteLine(CurrentRoom);
 
@@ -94,11 +94,11 @@ namespace Zork
 
         private static void InitializeRoomDescriptions()
         {
-            //var roomMap = new Dictionary<string, Room>();
-            //foreach (Room room in Rooms)
-            //{
-            //    roomMap.Add(room.Name, room);
-            //}
+            var roomMap = new Dictionary<string, Room>();
+            foreach (Room room in Rooms)
+            {
+                roomMap.Add(room.Name, room);
+            }
 
             Rooms[0, 0].Description = "You are on a rock-strewn trail";
             Rooms[0, 1].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred.";
