@@ -9,7 +9,7 @@ namespace Zork
         {
             get
             {
-                return Rooms[LocationRow, LocationColumn];
+                return Rooms[Location.Row, Location.Column];
             }
         }
 
@@ -19,7 +19,7 @@ namespace Zork
 
             Console.WriteLine("Welcome to Zork!");
 
-            //Room previousRoom = null;
+            Room previousRoom = null;
 
             Commands command = Commands.UNKNOWN;
 
@@ -27,11 +27,11 @@ namespace Zork
             {
                 Console.WriteLine(CurrentRoom);
 
-                //if (previousRoom != CurrentRoom)
-                //{
-                //    Console.WriteLine(CurrentRoom.Description);
-                //    previousRoom = CurrentRoom;
-                //}
+                if (previousRoom != CurrentRoom)
+                {
+                    Console.WriteLine(CurrentRoom.Description);
+                    previousRoom = CurrentRoom;
+                }
 
                 Console.Write("> ");
 
@@ -70,20 +70,20 @@ namespace Zork
 
             switch (command)
             {
-                case Commands.NORTH when LocationRow < Rooms.GetLength(0) - 1:
-                    LocationRow++;
+                case Commands.NORTH when Location.Row < Rooms.GetLength(0) - 1:
+                    Location.Row++;
                     didMove = true;
                     break;
-                case Commands.SOUTH when LocationRow > 0:
-                    LocationRow--;
+                case Commands.SOUTH when Location.Row > 0:
+                    Location.Row--;
                     didMove = true;
                     break;
-                case Commands.EAST when LocationColumn < Rooms.GetLength(1) - 1:
-                    LocationColumn++;
+                case Commands.EAST when Location.Column < Rooms.GetLength(1) - 1:
+                    Location.Column++;
                     didMove = true;
                     break;
-                case Commands.WEST when LocationColumn > 0:
-                    LocationColumn--;
+                case Commands.WEST when Location.Column > 0:
+                    Location.Column--;
                     didMove = true;
                     break;
             }
@@ -100,17 +100,15 @@ namespace Zork
                 roomMap.Add(room.Name, room);
             }
 
-            Rooms[0, 0].Description = "You are on a rock-strewn trail";
-            Rooms[0, 1].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred.";
-            Rooms[0, 2].Description = "You are at the top of the Great Canyon on its south wall.";
-            
-            Rooms[1, 0].Description = "This is a forest, with trees in all directions around you.";
-            Rooms[1, 1].Description = "this is an open field west of a white house, with a boarded front door.";
-            Rooms[1, 2].Description = "You are behind the while house. In one corner of the house there is a small window which is slightly ajar.";
-            
-            Rooms[2, 0].Description = "This is a forest, with trees in all directions aroud you.";
-            Rooms[2, 1].Description = "You are facing the north side of a white house. There is no door here, and all the windows are barred.";
-            Rooms[2, 2].Description = "You are in a clearing, with a forest surrounding you on the west and south.";
+            roomMap["Rocky Trail"].Description = "You are on a rock-strewn trail";
+            roomMap["South of House"].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred.";
+            roomMap["Canyon View"].Description = "You are at the top of the Great Canyon on its south wall.";
+            roomMap["Forest"].Description = "This is a forest, with trees in all directions around you.";
+            roomMap["West of House"].Description = "this is an open field west of a white house, with a boarded front door.";
+            roomMap["Behind House"].Description = "You are behind the while house. In one corner of the house there is a small window which is slightly ajar.";
+            roomMap["Dense Woods"].Description = "This is a forest, with trees in all directions aroud you.";
+            roomMap["North of House"].Description = "You are facing the north side of a white house. There is no door here, and all the windows are barred.";
+            roomMap["Clearing"].Description = "You are in a clearing, with a forest surrounding you on the west and south.";
 
 
         }
@@ -122,7 +120,6 @@ namespace Zork
             { new Room("Dense Woods"),    new Room("North of House"),   new Room("Clearing") }
         };
 
-        private static int LocationRow = 1;
-        private static int LocationColumn = 1;
+        private static (int Row, int Column) Location = (1, 1);
     }
 }
