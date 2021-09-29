@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Zork
 {
@@ -18,7 +19,7 @@ namespace Zork
         {
             Console.WriteLine("Welcome to Zork!");
 
-            const string roomFileName = "Rooms.txt";
+            const string roomFileName = "Rooms.Json";
             InitializeRoomDescriptions(roomFileName);
 
             Room previousRoom = null;
@@ -102,24 +103,33 @@ namespace Zork
                 roomMap.Add(room.Name, room);
             }
 
-            string[] lines = File.ReadAllLines(roomFileName);
-
-            foreach (string line in lines)
+            string roomsJsonString = roomFileName.ReadAllText(roomFileName);
+            Room[] rooms = JsonConvert.DeserializeObject<Room[]>(roomsJsonString);
+            foreach (Room room in rooms)
             {
-                const string delimiter = "##";
-                const int expectedFieldCount = 2;
-
-                string[] fields = line.Split(delimiter);
-                if (fields.Length() != expectedFieldCount)
-                {
-                    throw new Exception("Invalid Input.");
-                }
-                //Assert.IsTrue(fields.Length == expectedFieldCount, "Invalid record.");
-
-                (string name, string description) = (fields[(int)Fields.Name], fields[(int)Fields.Description]);
-
-                roomMap[name].Description = description;
+                roomMap[room.Name].Description = room.Description;
             }
+
+
+
+            //string[] lines = File.ReadAllLines(roomFileName);
+
+            //foreach (string line in lines)
+            //{
+            //    const string delimiter = "##";
+            //    const int expectedFieldCount = 2;
+
+            //    string[] fields = line.Split(delimiter);
+            //    if (fields.Length() != expectedFieldCount)
+            //    {
+            //        throw new Exception("Invalid Input.");
+            //    }
+            //    //Assert.IsTrue(fields.Length == expectedFieldCount, "Invalid record.");
+
+            //    (string name, string description) = (fields[(int)Fields.Name], fields[(int)Fields.Description]);
+
+            //    roomMap[name].Description = description;
+            //}
         }
 
         private static readonly Room[,] Rooms =
