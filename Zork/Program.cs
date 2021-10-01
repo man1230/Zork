@@ -7,6 +7,16 @@ namespace Zork
 {
     class Program
     {
+        private static readonly Dictionary<string, Room> RoomMap;
+        static Program()
+        {
+            RoomMap = new Dictionary<string, Room>();
+            foreach (Room room in Rooms)
+            {
+                RoomMap[room.Name] = room;
+            }
+        }
+
         private static Room CurrentRoom
         {
             get
@@ -19,8 +29,9 @@ namespace Zork
         {
             Console.WriteLine("Welcome to Zork!");
 
-            const string roomFileName = "Rooms.Json";
-            InitializeRoomDescriptions(roomFileName);
+            const string defaultRoomsFileName = "Rooms.txt";
+            string roomsFileName = (args.Length > 0 ? args[(int)CommandLineArguments.RoomsFileName] : defaultRoomsFileName);
+            InitializeRoomDescriptions(defaultRoomsFileName);
 
             Room previousRoom = null;
 
@@ -97,39 +108,24 @@ namespace Zork
 
         private static void InitializeRoomDescriptions(string roomFileName)
         {
-            var roomMap = new Dictionary<string, Room>();
-            foreach (Room room in Rooms)
+            const string delimiter = "##";
+            const int expectedFieldCount = 2;
+
+            string[] lines = File.ReadAllLines(roomFileName);
+            foreach (string line in lines)
             {
-                roomMap.Add(room.Name, room);
+
+                string[] fields = line.Split(delimiter);
+                if (fields.Length != expectedFieldCount)
+                {
+                    throw new Exception("Invalid Record.");
+                }
+                //Assert.IsTrue(fields.Length == expectedFieldCount, "Invalid record.");
+
+                (string name, string description) = (fields[(int)Fields.Name], fields[(int)Fields.Description]);
+
+                RoomMap[name].Description = description;
             }
-
-            string roomsJsonString = roomFileName.ReadAllText(roomFileName);
-            Room[] rooms = JsonConvert.DeserializeObject<Room[]>(roomsJsonString);
-            foreach (Room room in rooms)
-            {
-                roomMap[room.Name].Description = room.Description;
-            }
-
-
-
-            //string[] lines = File.ReadAllLines(roomFileName);
-
-            //foreach (string line in lines)
-            //{
-            //    const string delimiter = "##";
-            //    const int expectedFieldCount = 2;
-
-            //    string[] fields = line.Split(delimiter);
-            //    if (fields.Length() != expectedFieldCount)
-            //    {
-            //        throw new Exception("Invalid Input.");
-            //    }
-            //    //Assert.IsTrue(fields.Length == expectedFieldCount, "Invalid record.");
-
-            //    (string name, string description) = (fields[(int)Fields.Name], fields[(int)Fields.Description]);
-
-            //    roomMap[name].Description = description;
-            //}
         }
 
         private static readonly Room[,] Rooms =
@@ -143,6 +139,11 @@ namespace Zork
         {
             Name = 0,
             Description = 1
+        }
+
+        private enum CommandLineArguments
+        {
+            RoomsFileName = 0
         }
 
         private static (int Row, int Column) Location = (1, 1);
