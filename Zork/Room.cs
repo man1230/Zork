@@ -8,6 +8,8 @@ namespace Zork
 
         public string Description { get; set; }
 
+        public string[] Neighbors { get; }
+
         public Room(string name, string description = null)
         {
             Name = name;
