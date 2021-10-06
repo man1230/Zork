@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Zork
 {
@@ -6,13 +7,26 @@ namespace Zork
     {
         public World World { get; }
 
-        public Room CurrentRoom { get; set; }
+        public Room CurrentRoom {get; private set; }
+
+        public string CurrentRoomName
+        {
+            get
+            {
+                return CurrentRoom?.Name;
+            }
+            set
+            {
+                CurrentRoom = World?.RoomsByName.GetValueOrDefault(value);
+            }
+        }
 
         public Room PreviousRoom { get; set; }
 
         public Player(World world, string startingLocation)
         {
             World = world;
+            CurrentRoomName = startingLocation;
 
             //for (int row = 0; row < World.Rooms.GetLength(0); row++)
             //{
