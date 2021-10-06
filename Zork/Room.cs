@@ -2,7 +2,7 @@
 
 namespace Zork
 {
-    class Room
+    public class Room
     {
         public string Name { get; }
 
