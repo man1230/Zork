@@ -7,6 +7,10 @@ namespace Zork
     {
         public World World { get; }
 
+        public int Score { get; set; }
+
+        public int Moves { get; set; }
+
         public Room CurrentRoom {get; private set; }
 
         public string CurrentRoomName
