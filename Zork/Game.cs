@@ -62,7 +62,7 @@ namespace Zork
                         }
                         Player.Moves++;
                         break;
-                    
+
                     case Commands.SCORE:
                         Console.WriteLine($"Your score is {Player.Score} after {Player.Moves} move(s).");
                         break;

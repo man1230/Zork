@@ -11,7 +11,7 @@ namespace Zork
 
         public int Moves { get; set; }
 
-        public Room CurrentRoom {get; private set; }
+        public Room CurrentRoom { get; private set; }
 
         public string CurrentRoomName
         {
@@ -41,7 +41,7 @@ namespace Zork
             //            Location = (row, column);
             //            return;
             //        }
-                    
+
             //    }
             //}
         }
