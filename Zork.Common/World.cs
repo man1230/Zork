@@ -1,5 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace Zork
 {
@@ -7,22 +10,24 @@ namespace Zork
     {
         public Room[] Rooms { get; set; }
 
-        public Dictionary<string, Room> RoomsByName { get; private set; }
+        [JsonIgnore]
+        public Dictionary<string, Room> RoomsByName => mRoomsByName;
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context)
         {
-            RoomsByName = new Dictionary<string, Room>();
-
-            foreach (Room room in Rooms)
-            {
-                RoomsByName.Add(room.Name, room);
-            }
+            mRoomsByName = Rooms.ToDictionary(room => room.Name, room => room);
 
             foreach (Room room in Rooms)
             {
                 room.UpdateNeighbors(this);
             }
         }
+
+        [JsonProperty]
+
+        public string StartingLocation { get; set; }
+
+        private Dictionary<string, Room> mRoomsByName;
     }
 }

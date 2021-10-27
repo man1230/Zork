@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "JVMcYFAMvxHsydTx4UgtHZNvZg2zofVubAaDGa8g+33hXW1OooONhpqCfQHG7nM8t+qGR22y4+pC8S1/ZpPNtA==",
+  "success": true,
+  "projectFilePath": "D:\\SchoolWork\\DIG4778\\Zork\\Zork.Common\\Zork.Common.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\fabna\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\fabna\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\fabna\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

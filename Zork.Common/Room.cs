@@ -10,11 +10,11 @@ namespace Zork
 
         public string Description { get; private set; }
 
-        [JsonIgnore]
-        public Dictionary<Directions, Room> Neighbors { get; set; }
-
         [JsonProperty(PropertyName = "Neighbors")]
         public Dictionary<Directions, string> NeighborNames { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<Directions, Room> Neighbors { get; private set; }
 
         public Room(string name, string description = null)
         {
@@ -25,8 +25,9 @@ namespace Zork
         public void UpdateNeighbors(World world)
         {
             Neighbors = new Dictionary<Directions, Room>();
-            foreach (var (direction, name) in NeighborNames)
+            foreach (var pair in NeighborNames)
             {
+                (Directions direction, string name) = (pair.Key, pair.Value);
                 Neighbors.Add(direction, world.RoomsByName[name]);
             }
         }
