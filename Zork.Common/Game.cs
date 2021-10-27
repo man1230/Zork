@@ -1,11 +1,13 @@
 ﻿using System;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using System.ComponentModel;
 
 namespace Zork
 {
-    public class Game
+    public class Game : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public World World { get; set; }
 
         public string StartingLocation { get; set; }

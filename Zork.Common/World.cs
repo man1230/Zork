@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace Zork
 {
-    public class World
+    public class World : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public Room[] Rooms { get; set; }
 
         [JsonIgnore]
