@@ -107,6 +107,11 @@ namespace Zork.Builder
             }
         }
 
+        private void deleteRoomButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not yet implemented.");
+        }
+
         private void roomsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             deleteRoomButton.Enabled = roomsListBox.SelectedItem != null;
@@ -117,10 +122,6 @@ namespace Zork.Builder
             }
         }
 
-        private void deleteRoomButton_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Not yet implemented.");
-        }
 
         private GameViewModel _viewModel;
         private Control[] _gameDependentControls;
