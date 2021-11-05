@@ -5,6 +5,8 @@ using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Zork;
+using System.Collections.Generic;
+using Zork.Builder.UserControls;
 
 namespace Zork.Builder
 {
@@ -19,16 +21,7 @@ namespace Zork.Builder
             set
             {
                 _viewModel.IsGameLoaded = value;
-
-                foreach (var control in _gameDependentControls)
-                {
-                    control.Enabled = _viewModel.IsGameLoaded;
-                }
-
-                foreach (var menuItem in _gameDependentMenuItems)
-                {
-                    menuItem.Enabled = _viewModel.IsGameLoaded;
-                }
+                mainTabControl.Enabled = IsGameLoaded;
             }
         }
         private GameViewModel ViewModel
@@ -48,21 +41,15 @@ namespace Zork.Builder
         {
             InitializeComponent();
             ViewModel = new GameViewModel();
-
-            _gameDependentControls = new Control[]
-            {
-                roomsGroupBox,
-                roomSettingsGroupBox,
-                addRoomButton,
-                deleteRoomButton
-            };
-            _gameDependentMenuItems = new ToolStripMenuItem[]
-            {
-                saveToolStripMenuItem,
-                saveAsToolStripMenuItem
-            };
-
             IsGameLoaded = false;
+
+            mSelectNeighborControlMap = new Dictionary<Directions, SelectNeighborControl>
+            {
+                { Directions.NORTH, northSelectNeighborControl},
+                { Directions.SOUTH, southSelectNeighborControl},
+                { Directions.EAST, eastSelectNeighborControl},
+                { Directions.WEST, westSelectNeighborControl}
+            };
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -120,6 +107,16 @@ namespace Zork.Builder
             }
         }
 
+        private void roomsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteRoomButton.Enabled = roomsListBox.SelectedItem != null;
+            Room selectedRoom = roomsListBox.SelectedItem as Room;
+            foreach (var entry in mSelectNeighborControlMap)
+            {
+                entry.Value.Room = selectedRoom;
+            }
+        }
+
         private void deleteRoomButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not yet implemented.");
@@ -128,6 +125,8 @@ namespace Zork.Builder
         private GameViewModel _viewModel;
         private Control[] _gameDependentControls;
         private ToolStripMenuItem[] _gameDependentMenuItems;
+
+        private readonly Dictionary<Directions, SelectNeighborControl> mSelectNeighborControlMap;
 
     }
 }
