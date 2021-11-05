@@ -1,13 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Zork.Builder
 {
-    internal class GameViewModel
+    internal class GameViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsGameLoaded { get; set; }
+
         public BindingList<Room> Rooms { get; set; }
 
-        public Game game
+        public Game Game
         {
             set
             {
@@ -23,6 +29,29 @@ namespace Zork.Builder
                         Rooms = new BindingList<Room>(Array.Empty<Room>());
                     }
                 }
+            }
+        }
+
+        public void SaveWorld(string filename)
+        {
+            if (!IsGameLoaded)
+            {
+                throw new InvalidOperationException("No game loaded.");
+            }
+
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                throw new InvalidProgramException("Invalid filename");
+            }
+
+            JsonSerializer serializer = new JsonSerializer
+            {
+                Formatting = Formatting.Indented
+            };
+            using (StreamWriter streamWriter = new StreamWriter(filename))
+            using (JsonWriter jsonWriter = new JsonTextWriter(streamWriter))
+            {
+                serializer.Serialize(jsonWriter, _game);
             }
         }
 

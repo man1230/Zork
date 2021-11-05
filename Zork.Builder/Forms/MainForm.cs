@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -9,6 +10,27 @@ namespace Zork.Builder
 {
     public partial class MainForm : Form
     {
+        private bool IsGameLoaded
+        {
+            get
+            {
+                return _viewModel.IsGameLoaded;
+            }
+            set
+            {
+                _viewModel.IsGameLoaded = value;
+
+                foreach (var control in _gameDependentControls)
+                {
+                    control.Enabled = _viewModel.IsGameLoaded;
+                }
+
+                foreach (var menuItem in _gameDependentMenuItems)
+                {
+                    menuItem.Enabled = _viewModel.IsGameLoaded;
+                }
+            }
+        }
         private GameViewModel ViewModel
         {
             get => _viewModel;
@@ -26,6 +48,21 @@ namespace Zork.Builder
         {
             InitializeComponent();
             ViewModel = new GameViewModel();
+
+            _gameDependentControls = new Control[]
+            {
+                roomsGroupBox,
+                roomSettingsGroupBox,
+                addRoomButton,
+                deleteRoomButton
+            };
+            _gameDependentMenuItems = new ToolStripMenuItem[]
+            {
+                saveToolStripMenuItem,
+                saveAsToolStripMenuItem
+            };
+
+            IsGameLoaded = false;
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,9 +74,25 @@ namespace Zork.Builder
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string jsonString = File.ReadAllText(openFileDialog.FileName);
-                ViewModel.game = JsonConvert.DeserializeObject<Game>(jsonString);
+                try
+                {
+                    string jsonString = File.ReadAllText(openFileDialog.FileName);
+                    ViewModel.Game = JsonConvert.DeserializeObject<Game>(jsonString);
+                    IsGameLoaded = true;
+                    
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message, "Zork Builder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string filename = "TestFile.json";
+            _viewModel.SaveWorld(filename);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -53,8 +106,16 @@ namespace Zork.Builder
             {
                 if (addRoomForm.ShowDialog() == DialogResult.OK)
                 {
-                    Room room = new Room(addRoomForm.RoomName);
-                    ViewModel.Rooms.Add(room);
+                    Room existingRoom = ViewModel.Rooms.FirstOrDefault(room => room.Name.Equals(addRoomForm.RoomName, StringComparison.OrdinalIgnoreCase));
+                    if (existingRoom != null)
+                    {
+                        MessageBox.Show("Room already exists", "Zork Builder", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    else
+                    {
+                        Room room = new Room(addRoomForm.RoomName);
+                        ViewModel.Rooms.Add(room);
+                    }
                 }
             }
         }
@@ -65,5 +126,8 @@ namespace Zork.Builder
         }
 
         private GameViewModel _viewModel;
+        private Control[] _gameDependentControls;
+        private ToolStripMenuItem[] _gameDependentMenuItems;
+
     }
 }

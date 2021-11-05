@@ -7,11 +7,10 @@ using Newtonsoft.Json;
 
 namespace Zork
 {
-    public class World : INotifyPropertyChanged
+    public class World
     {
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public Room[] Rooms { get; set; }
+        public List<Room> Rooms { get; set; }
 
         [JsonIgnore]
         public Dictionary<string, Room> RoomsByName => mRoomsByName;

@@ -10,5 +10,10 @@ namespace Zork.Builder
         {
             InitializeComponent();
         }
+
+        private void nameTextBox_TextChanged(object sender, System.EventArgs e)
+        {
+            okButton.Enabled = !string.IsNullOrWhiteSpace(RoomName);
+        }
     }
 }

@@ -5,13 +5,12 @@ using Newtonsoft.Json;
 
 namespace Zork
 {
-    public class Room : INotifyPropertyChanged
+    public class Room
     {
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
         [JsonProperty(PropertyName = "Neighbors")]
         public Dictionary<Directions, string> NeighborNames { get; set; }
