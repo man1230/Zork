@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
-using System.ComponentModel;
+using System.IO;
 
 namespace Zork
 {
@@ -12,6 +12,8 @@ namespace Zork
         public string StartingLocation { get; set; }
         public string StartMessage { get; set; }
         public string QuitMessage { get; set; }
+
+        public IOutputService Output { get; set; }
 
         [JsonIgnore]
         public Player Player { get; set; }
@@ -24,31 +26,31 @@ namespace Zork
 
         public void Run()
         {
-            Console.WriteLine(StartMessage);
+            Output.WriteLine(StartMessage);
 
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.WriteLine(Player.CurrentRoom);
+                Output.WriteLine(Player.CurrentRoom);
 
                 if (Player.PreviousRoom != Player.CurrentRoom)
                 {
-                    Console.WriteLine(Player.CurrentRoom.Description);
+                    Output.WriteLine(Player.CurrentRoom.Description);
                     Player.PreviousRoom = Player.CurrentRoom;
                 }
 
-                Console.Write("> ");
+                Output.Write("> ");
 
                 command = ToCommand(Console.ReadLine().Trim());
 
                 switch (command)
                 {
                     case Commands.QUIT:
-                        Console.WriteLine(QuitMessage);
+                        Output.WriteLine(QuitMessage);
                         break;
 
                     case Commands.LOOK:
-                        Console.WriteLine(Player.CurrentRoom.Description);
+                        Output.WriteLine(Player.CurrentRoom.Description);
                         Player.Moves++;
                         break;
 
@@ -59,13 +61,13 @@ namespace Zork
                         Directions direction = (Directions)command;
                         if ((Player.Move(direction) == false))
                         {
-                            Console.WriteLine("The way is shut");
+                            Output.WriteLine("The way is shut");
                         }
                         Player.Moves++;
                         break;
 
                     case Commands.SCORE:
-                        Console.WriteLine($"Your score is {Player.Score} after {Player.Moves} move(s).");
+                        Output.WriteLine($"Your score is {Player.Score} after {Player.Moves} move(s).");
                         break;
 
                     case Commands.REWARD:
@@ -74,14 +76,20 @@ namespace Zork
                         break;
 
                     default:
-                        Console.WriteLine("Unknown command");
+                        Output.WriteLine("Unknown command");
                         break;
                 }
             }
         }
 
-        private static Commands ToCommand(string commandString) => Enum.TryParse(commandString, true, out Commands result) ? result : Commands.UNKNOWN;
+        public static Game Load(string filename, IOutputService output)
+        {
+            Game game = JsonConvert.DeserializeObject<Game>(File.ReadAllText(filename));
+            game.Output = output;
+            return game;
+        }
 
+        private static Commands ToCommand(string commandString) => Enum.TryParse(commandString, true, out Commands result) ? result : Commands.UNKNOWN;
 
     }
 }
